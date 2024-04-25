@@ -1,14 +1,14 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(GridSpawner))]
+[CustomEditor(typeof(GridManager))]
 public class GridSpawnerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        GridSpawner gridSpawner = (GridSpawner)target;
+        GridManager gridSpawner = (GridManager)target;
 
         if (gridSpawner == null )
         {

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ab48e5ede72acf4a8c13d61371c489a, type: 3}
+  m_Name: Grid Config
+  m_EditorClassIdentifier: 
+  GridPosition: {x: 0, y: 0, z: 0}
+  GridSize: {x: 35, y: 35}
+  HeightOffset: 0.001
+  GridTilePrefab: {fileID: 8048391421255675662, guid: 98c73523ccf8f21428b886c75ad7a2f8,
+    type: 3}
+  TileRatio: 2
+  TurnPointPrefab: {fileID: 3974077129786914280, guid: 51a8bc33ac61d6d43b847abec0441f16,
+    type: 3}
+  TurnPointPositionArray:
+  - {x: 5, y: 0}
+  - {x: 5, y: 17}
+  - {x: 29, y: 17}
+  - {x: 29, y: 5}
+  - {x: 17, y: 5}
+  - {x: 17, y: 29}
+  - {x: 34, y: 29}
+  PathMaterial: {fileID: 2100000, guid: 94bfa6ec22a62324188ea3de15cd96fc, type: 2}
