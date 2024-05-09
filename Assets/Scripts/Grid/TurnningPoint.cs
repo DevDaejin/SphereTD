@@ -18,13 +18,11 @@ public class TurnningPoint : MonoBehaviour
         turnningPointNameTxt.text = turnningPointName;
 
         gameObject.name = turnningPointName;
-        Debug.Log($"{turnningPointName}  {nextPoint}");
         this.nextPoint = nextPoint;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("qqq");
         if (other.tag.Equals(ENEMY))
         {
             Debug.Log(nextPoint);

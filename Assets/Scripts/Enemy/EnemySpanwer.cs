@@ -5,10 +5,11 @@ public class EnemySpawner : MonoBehaviour
     public static EnemySpawner Instance { get => instance; }
     private static EnemySpawner instance = null;
 
+    [SerializeField] public Vector3 SpawnPoint;
+    [SerializeField] public Vector3 EndPoint;
+
     [SerializeField] private GameObject enemyPrefab;
     private EnemyPool pool;
-
-
     private EnemyBase target;
 
     private void Awake()
@@ -29,17 +30,28 @@ public class EnemySpawner : MonoBehaviour
         pool = GetComponent<EnemyPool>() 
             ?? gameObject.AddComponent<EnemyPool>();
 
-        pool.InitailizePool(enemyPrefab);
+        pool.InitializePool(enemyPrefab, GetEnemy, ReleaseEnemy);
+
+
+        //Test logic
         target = pool.GetEnemy();
 
-        Invoke("A", 1);
+        Invoke("TestFunc", 1);
     }
 
-    private void A()
+    private void TestFunc()
     {
         pool.ReturnEnemy(target);
         pool.GetEnemy();
         pool.GetEnemy();
         pool.GetEnemy();
+    }
+
+    private void GetEnemy(EnemyBase enemy)
+    {
+    }
+
+    private void ReleaseEnemy(EnemyBase enemy) 
+    {
     }
 }

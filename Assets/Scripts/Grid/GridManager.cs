@@ -19,7 +19,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] Transform navMesh;
     NavMeshSurface navMeshSurface = null;
 
-    //title
+    // title
     private Tile[,] tileArray;
    
     /// const string 변수들
@@ -40,54 +40,54 @@ public class GridManager : MonoBehaviour
 
     public void SpawnGrid()
     {
-        //그리드 높이 최소값 설정
+        // 그리드 높이 최소값 설정
         if (gridConfig.HeightOffset < GRID_HEIGHT_OFFSET_MINIMUN)
             gridConfig.HeightOffset = GRID_HEIGHT_OFFSET_MINIMUN;
 
-        //그리드, 타일들의 그룹(부모)
+        // 그리드, 타일들의 그룹(부모)
         InitGrid();
 
-        //그리드 내 타일 생성
+        // 그리드 내 타일 생성
         CreateTileGameObject();
 
-        //그리드 사이즈에 맞춰 Nav mesh 스케일 조정
+        // 그리드 사이즈에 맞춰 Nav mesh 스케일 조정
         navMesh.position = gridConfig.GridPosition;
         navMesh.localScale = new Vector3(gridConfig.GridSize.x * gridConfig.TileRatio,
                                           gridConfig.GridSize.y * gridConfig.TileRatio, 1);
 
-        //Nav bake
+        // Nav bake
         if (navMeshSurface == null) navMeshSurface = navMesh.GetComponentInParent<NavMeshSurface>();
         navMeshSurface.BuildNavMesh();
     }
 
     public void SpawnPath()
-    {//적의 이동 경로
+    {// 적의 이동 경로
 
-        //패쓰, 적의 이동 경로 타일들의 그룹(부모)
+        // 패쓰, 적의 이동 경로 타일들의 그룹(부모)
         InitPath();
 
-        //그리드 내 패쓰 해당 타일
+        // 그리드 내 패쓰 해당 타일
         List<Tile> path = GetPath();
 
-        //패쓰 생성
+        // 패쓰 생성
         GeneratePath(path);
 
-        //터닝 포인트 표시
+        // 터닝 포인트 표시
         GenerateTurnningPoint();
     }
 
     private void InitGrid()
     {
-        //기존 오브젝트 삭제
+        // 기존 오브젝트 삭제
         grid = GameObject.Find(GRID_NAME);
         if (grid)
         {
             DestroyImmediate(grid);
         }
 
-        //생성
+        // 생성
         grid = new GameObject(GRID_NAME);
-        //포지션
+        // 포지션
         grid.transform.SetParent(transform);
         grid.transform.position = Vector3.up * gridConfig.HeightOffset;
     }
@@ -96,34 +96,34 @@ public class GridManager : MonoBehaviour
     {
         tileArray = new Tile[gridConfig.GridSize.x, gridConfig.GridSize.y];
 
-        //그리드를 대칭 배치 하기 위한 중점
+        // 그리드를 대칭 배치 하기 위한 중점
         Vector3 center = GetCenterPosition();
 
-        //타일 이름 설정 최적화를 위해
+        // 타일 이름 설정 최적화를 위해
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int x = 0; x < gridConfig.GridSize.x; x++)
         {
             for (int y = 0; y < gridConfig.GridSize.y; y++)
             {
-                //생성
+                // 생성
                 GameObject tile = Instantiate(gridConfig.GridTilePrefab, grid.transform);
 
-                //명명
+                // 명명
                 stringBuilder.Clear();
                 stringBuilder.Append(TILE_NAME).AppendFormat(" {0}, {1}", x, y);
                 tile.name = stringBuilder.ToString();
 
-                //사이즈
+                // 사이즈
                 Vector3 tileSize = new Vector3(gridConfig.TileRatio, 1, gridConfig.TileRatio);
                 tile.transform.localScale = tileSize;
 
-                //포지션
+                // 포지션
                 tile.transform.localPosition = new Vector3(
                     center.x + (x * tileSize.x),
                     0,
                     center.z + ((gridConfig.GridSize.y - 1 - y) * tileSize.z));
-                //그리드 원점(0, 0)을 좌상단으로
+                // 그리드 원점(0, 0)을 좌상단으로
                 tileArray[x, y] = new Tile(tile.gameObject, new Vector2Int(x, y));
             }
         }
@@ -131,41 +131,41 @@ public class GridManager : MonoBehaviour
 
     private Vector3 GetCenterPosition()
     {
-        //그리드 사이즈의 중심 계산
+        // 그리드 사이즈의 중심 계산
         Vector3 center = new Vector3(gridConfig.GridSize.x, 0, gridConfig.GridSize.y) * gridConfig.TileRatio;
         center *= -0.5f;
 
-        //타일 사이즈의 중심 계산
+        // 타일 사이즈의 중심 계산
         Vector3 offset = Vector3.one * gridConfig.TileRatio * 0.5f;
         offset.y = 0;
 
-        //사용자 설정 값 + 그리드 + 타일
+        // 사용자 설정 값 + 그리드 + 타일
         return gridConfig.GridPosition + center + offset;
     }
 
     private void InitPath()
     {
-        //기존 오브젝트 삭제
+        // 기존 오브젝트 삭제
         path = GameObject.Find(PATH_NAME);
         if (path)
         {
             DestroyImmediate(path);
         }
 
-        //생성
+        // 생성
         path = new GameObject(PATH_NAME);
 
-        //포지션
+        // 포지션
         path.transform.SetParent(transform);
         path.transform.position = grid.transform.position + (Vector3.down * PATH_HEIGHT_OFFSET);
 
-        //캐싱 or 생성
+        // 캐싱 or 생성
         if (pathFinder == null)
         {
             pathFinder = GetComponent<PathFinder>() ?? gameObject.AddComponent<PathFinder>();
         }
 
-        //적 이동 패쓰 메테리얼
+        // 적 이동 패쓰 메테리얼
         if (gridConfig.PathMaterial == null)
         {
             gridConfig.PathMaterial = Resources.Load<Material>(PATH_MATERIAL);
@@ -175,7 +175,7 @@ public class GridManager : MonoBehaviour
     }
 
     private List<Tile> GetPath()
-    {//사용자가 입력한 turnning point 간의 최소 거리 수집 후 전달
+    {// 사용자가 입력한 turnning point 간의 최소 거리 수집 후 전달
         List<Tile> pathTileList = new List<Tile>();
         if (gridConfig.TurnPointPositionArray.Length < 2)
         {
@@ -193,7 +193,7 @@ public class GridManager : MonoBehaviour
     }
 
     private Tile GetTile(Vector2Int position)
-    {//특정 tile 가져오기
+    {// 특정 tile 가져오기
         if (position.x >= 0 && position.x < gridConfig.GridSize.x &&
            position.y >= 0 && position.y < gridConfig.GridSize.y)
         {
@@ -205,7 +205,7 @@ public class GridManager : MonoBehaviour
     }
 
     private void GeneratePath(List<Tile> pathTileList)
-    {//매개변수 타일을 복수하여 적 이동경로로 사용
+    {// 매개변수 타일을 복수하여 적 이동경로로 사용
         GameObject go;
         for (int pathIndex = 0; pathIndex < pathTileList.Count; pathIndex++)
         {
@@ -222,56 +222,61 @@ public class GridManager : MonoBehaviour
 
     private void GenerateTurnningPoint()
     {
+        int length = gridConfig.TurnPointPositionArray.Length;
         int next = 0;
-        for (int index = 0; index < gridConfig.TurnPointPositionArray.Length; index++)
+        // y값이 0이하는 쓰지 않는 데이터라는 의미로 사용하겠음
+        Vector3 targetPosition = Vector3.down;
+
+        turnPointArray = new TurnningPoint[length];
+
+        for (int index = 0; index < length; index++)
         {
+            // 생성
             TurnningPoint turnningPoint = 
                 Instantiate(gridConfig.TurnPointPrefab, path.transform).GetComponent<TurnningPoint>();
 
+            // 초기화
             turnningPoint.transform.position = 
                 GetTile(gridConfig.TurnPointPositionArray[index]).gameObject.transform.position + (Vector3.up * INDICATOR_HEIGHT_OFFSET);
 
+            //컨테이너 캐싱
+            turnPointArray[index] = turnningPoint;
+
 
             next = index + 1;
+
             if (next >= gridConfig.TurnPointPositionArray.Length)
-                next = gridConfig.TurnPointPositionArray.Length - 1;
+            {
+                // y값이 0이하는 쓰지 않는 데이터라는 의미로 사용하겠음
+                targetPosition = Vector3.down;
+            }
+            else
+            {
+                targetPosition = GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position;
+            }
 
             switch (index)
             {
                 case 0:
-                    turnningPoint.Init(
-                        INDICATOR_1, 
-                        GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position);
+                    turnningPoint.Init(INDICATOR_1, targetPosition);
                     break;
                 case 1:
-                    turnningPoint.Init(
-                        INDICATOR_2, 
-                        GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position);
+                    turnningPoint.Init(INDICATOR_2, targetPosition);
                     break;
                 case 2:
-                    turnningPoint.Init(
-                        INDICATOR_3, 
-                        GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position);
+                    turnningPoint.Init(INDICATOR_3, targetPosition);
                     break;
                 case 3:
-                    turnningPoint.Init(
-                        INDICATOR_4, 
-                        GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position);
+                    turnningPoint.Init(INDICATOR_4, targetPosition);
                     break;
                 case 4:
-                    turnningPoint.Init(
-                        INDICATOR_5, 
-                        GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position);
+                    turnningPoint.Init(INDICATOR_5, targetPosition);
                     break;
                 case 5:
-                    turnningPoint.Init(
-                        INDICATOR_6, 
-                        GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position);
+                    turnningPoint.Init(INDICATOR_6, targetPosition);
                     break;
                 case 6:
-                    turnningPoint.Init(
-                        INDICATOR_7, 
-                        GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position);
+                    turnningPoint.Init(INDICATOR_7, targetPosition);
                     break;
             }
         }
