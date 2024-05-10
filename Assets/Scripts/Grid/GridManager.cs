@@ -11,9 +11,8 @@ public class GridManager : MonoBehaviour
     private GameObject grid = null;
 
     [Header("Path")]
-    private TurnningPoint[] turnPointArray;
     private PathFinder pathFinder;
-    private GameObject path = null;
+    [SerializeField] private GameObject path = null;
 
     [Header("Nav")]
     [SerializeField] Transform navMesh;
@@ -227,8 +226,6 @@ public class GridManager : MonoBehaviour
         // y값이 0이하는 쓰지 않는 데이터라는 의미로 사용하겠음
         Vector3 targetPosition = Vector3.down;
 
-        turnPointArray = new TurnningPoint[length];
-
         for (int index = 0; index < length; index++)
         {
             // 생성
@@ -238,10 +235,6 @@ public class GridManager : MonoBehaviour
             // 초기화
             turnningPoint.transform.position = 
                 GetTile(gridConfig.TurnPointPositionArray[index]).gameObject.transform.position + (Vector3.up * INDICATOR_HEIGHT_OFFSET);
-
-            //컨테이너 캐싱
-            turnPointArray[index] = turnningPoint;
-
 
             next = index + 1;
 

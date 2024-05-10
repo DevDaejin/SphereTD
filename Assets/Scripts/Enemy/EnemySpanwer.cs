@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -6,7 +7,6 @@ public class EnemySpawner : MonoBehaviour
     private static EnemySpawner instance = null;
 
     [SerializeField] public Vector3 SpawnPoint;
-    [SerializeField] public Vector3 EndPoint;
 
     [SerializeField] private GameObject enemyPrefab;
     private EnemyPool pool;
@@ -32,6 +32,15 @@ public class EnemySpawner : MonoBehaviour
 
         pool.InitializePool(enemyPrefab, GetEnemy, ReleaseEnemy);
 
+        //생성 포인트
+        foreach (TurnningPoint tp in FindObjectsOfType<TurnningPoint>())
+        {
+            if (tp.name.Equals("Start"))
+            {
+                SpawnPoint = tp.transform.position;
+                break;
+            }
+        };
 
         //Test logic
         target = pool.GetEnemy();
@@ -49,9 +58,32 @@ public class EnemySpawner : MonoBehaviour
 
     private void GetEnemy(EnemyBase enemy)
     {
+        enemy.transform.position = SpawnPoint;
+        enemy.gameObject.SetActive(true);
+
+        if(enemy.OnArriveCallback == null)
+        {
+            enemy.OnArriveCallback += (() =>
+            {
+                Debug.Log("Arrive");
+                // 플레이어 체력 깎이는 로직
+            });
+        }
+
+        if (enemy.OnDeathCallback == null)
+        {
+            enemy.OnDeathCallback += (() =>
+            {
+                Debug.Log("Death");
+                // 남은 적 갯수 --
+                // 보상이있다면 보상
+                // 반환 pool.ReturnEnemy(enemy);
+            });
+        }
     }
 
     private void ReleaseEnemy(EnemyBase enemy) 
     {
+        enemy.gameObject.SetActive(false);
     }
 }

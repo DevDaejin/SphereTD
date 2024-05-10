@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyConfig : ScriptableObject
 {
     [Header("Grid")]
-    [SerializeField] private int baseHealth = 100;
+    [SerializeField] private int baseHP = 100;
     public int Defence = 0;
     [SerializeField] private EnemySpeed speedType = EnemySpeed.Normal;
 
@@ -34,9 +34,9 @@ public class EnemyConfig : ScriptableObject
         }
     }
 
-    public int GetHealth(int wave)
+    public int GetHP(int wave)
     {
         //1.1의 웨이브 곱으로 체력 증가
-        return Mathf.RoundToInt(baseHealth * Mathf.Pow(1.1f, wave - 1));
+        return Mathf.RoundToInt(baseHP * Mathf.Pow(1.1f, wave - 1));
     }
 }

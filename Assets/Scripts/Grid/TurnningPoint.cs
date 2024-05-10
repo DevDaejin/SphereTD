@@ -7,8 +7,8 @@ using UnityEngine.AI;
 
 public class TurnningPoint : MonoBehaviour
 {
-    TMP_Text turnningPointNameTxt;
-    [SerializeField] Vector3 nextPoint;
+    private TMP_Text turnningPointNameTxt;
+    [SerializeField] private Vector3 nextPoint;
 
     const string ENEMY = "Enemy";
 
@@ -26,7 +26,14 @@ public class TurnningPoint : MonoBehaviour
         if (other.tag.Equals(ENEMY))
         {
             Debug.Log(nextPoint);
-            other.GetComponent<NavMeshAgent>().SetDestination(nextPoint);
+
+            if (nextPoint != Vector3.down)
+            {
+            }
+            else
+            {
+                other.GetComponent<NavMeshAgent>().SetDestination(nextPoint);
+            }
         }
     }
 }
