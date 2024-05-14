@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] private GameObject enemyPrefab;
     private EnemyPool pool;
-    private EnemyBase target;
 
     private void Awake()
     {
@@ -30,7 +30,7 @@ public class EnemySpawner : MonoBehaviour
         pool = GetComponent<EnemyPool>() 
             ?? gameObject.AddComponent<EnemyPool>();
 
-        pool.InitializePool(enemyPrefab, GetEnemy, ReleaseEnemy);
+        pool.InitializePool(enemyPrefab, OnGetEnemy, OnReleaseEnemy);
 
         //생성 포인트
         foreach (TurnningPoint tp in FindObjectsOfType<TurnningPoint>())
@@ -41,22 +41,21 @@ public class EnemySpawner : MonoBehaviour
                 break;
             }
         };
-
-        //Test logic
-        target = pool.GetEnemy();
-
-        Invoke("TestFunc", 1);
     }
 
-    private void TestFunc()
+    public EnemyBase GetEnemy()
     {
-        pool.ReturnEnemy(target);
-        pool.GetEnemy();
-        pool.GetEnemy();
-        pool.GetEnemy();
+        return pool.GetEnemy();
     }
 
-    private void GetEnemy(EnemyBase enemy)
+    public void ReturnEnemy(EnemyBase enemy)
+    {
+        pool.ReturnEnemy(enemy);
+    }
+
+
+    // callback func
+    private void OnGetEnemy(EnemyBase enemy)
     {
         enemy.transform.position = SpawnPoint;
         enemy.gameObject.SetActive(true);
@@ -82,7 +81,8 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    private void ReleaseEnemy(EnemyBase enemy) 
+    // callback func
+    private void OnReleaseEnemy(EnemyBase enemy) 
     {
         enemy.gameObject.SetActive(false);
     }

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class EnemyBase : MonoBehaviour
 {
-    //private EnemyConfig config;
+    private EnemyConfig config;
     
     private NavMeshAgent agent;
     private int hp;
@@ -29,9 +29,11 @@ public class EnemyBase : MonoBehaviour
 
     private void Init(int wave)
     {
-        //agent.speed = config.Speed;
-        //hp = config.GetHP(wave);
-        //agent.SetDestination(new Vector3(30, 0, 30));
+        // Todo: Edit it
+        config ??= new EnemyConfig();
+
+        agent.speed = config.Speed;
+        hp = config.GetHP(wave);
     }
 
     public void TakeDamage(int damage)

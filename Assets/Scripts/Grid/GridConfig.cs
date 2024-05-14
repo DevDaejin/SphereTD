@@ -17,6 +17,7 @@ public class GridConfig : ScriptableObject
 
     [Header("Path")]
     public GameObject TurnPointPrefab;
-    public Vector2Int[] TurnPointPositionArray;
+    public Vector2Int[] TurnPointGridPositionArray;
+    public Vector3[] TurnPointWorldPositionArray;
     public Material PathMaterial;
 }

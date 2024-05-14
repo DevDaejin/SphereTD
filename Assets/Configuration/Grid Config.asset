@@ -20,7 +20,7 @@ MonoBehaviour:
   TileRatio: 2
   TurnPointPrefab: {fileID: 3974077129786914280, guid: 51a8bc33ac61d6d43b847abec0441f16,
     type: 3}
-  TurnPointPositionArray:
+  TurnPointGridPositionArray:
   - {x: 5, y: 0}
   - {x: 5, y: 17}
   - {x: 29, y: 17}
@@ -28,4 +28,5 @@ MonoBehaviour:
   - {x: 17, y: 5}
   - {x: 17, y: 29}
   - {x: 34, y: 29}
+  TurnPointWorldPositionArray: []
   PathMaterial: {fileID: 2100000, guid: 94bfa6ec22a62324188ea3de15cd96fc, type: 2}

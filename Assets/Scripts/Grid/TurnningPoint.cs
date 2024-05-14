@@ -29,10 +29,11 @@ public class TurnningPoint : MonoBehaviour
 
             if (nextPoint != Vector3.down)
             {
+                other.GetComponent<NavMeshAgent>().SetDestination(nextPoint);
             }
             else
             {
-                other.GetComponent<NavMeshAgent>().SetDestination(nextPoint);
+                
             }
         }
     }

@@ -176,16 +176,16 @@ public class GridManager : MonoBehaviour
     private List<Tile> GetPath()
     {// 사용자가 입력한 turnning point 간의 최소 거리 수집 후 전달
         List<Tile> pathTileList = new List<Tile>();
-        if (gridConfig.TurnPointPositionArray.Length < 2)
+        if (gridConfig.TurnPointGridPositionArray.Length < 2)
         {
             Debug.LogError("Check turnning point array");
         }
 
-        for (int i = 0; i < gridConfig.TurnPointPositionArray.Length - 1; i++)
+        for (int i = 0; i < gridConfig.TurnPointGridPositionArray.Length - 1; i++)
         {
             pathTileList.AddRange(pathFinder.Find(
-                GetTile(gridConfig.TurnPointPositionArray[i]), 
-                GetTile(gridConfig.TurnPointPositionArray[i + 1]), tileArray));
+                GetTile(gridConfig.TurnPointGridPositionArray[i]), 
+                GetTile(gridConfig.TurnPointGridPositionArray[i + 1]), tileArray));
         }
 
         return pathTileList;
@@ -221,10 +221,12 @@ public class GridManager : MonoBehaviour
 
     private void GenerateTurnningPoint()
     {
-        int length = gridConfig.TurnPointPositionArray.Length;
+        int length = gridConfig.TurnPointGridPositionArray.Length;
         int next = 0;
         // y값이 0이하는 쓰지 않는 데이터라는 의미로 사용하겠음
         Vector3 targetPosition = Vector3.down;
+
+        gridConfig.TurnPointWorldPositionArray = new Vector3[length];
 
         for (int index = 0; index < length; index++)
         {
@@ -234,42 +236,43 @@ public class GridManager : MonoBehaviour
 
             // 초기화
             turnningPoint.transform.position = 
-                GetTile(gridConfig.TurnPointPositionArray[index]).gameObject.transform.position + (Vector3.up * INDICATOR_HEIGHT_OFFSET);
+                GetTile(gridConfig.TurnPointGridPositionArray[index]).gameObject.transform.position + (Vector3.up * INDICATOR_HEIGHT_OFFSET);
 
             next = index + 1;
 
-            if (next >= gridConfig.TurnPointPositionArray.Length)
+            if (next >= gridConfig.TurnPointGridPositionArray.Length)
             {
                 // y값이 0이하는 쓰지 않는 데이터라는 의미로 사용하겠음
                 targetPosition = Vector3.down;
             }
             else
             {
-                targetPosition = GetTile(gridConfig.TurnPointPositionArray[next]).gameObject.transform.position;
+                gridConfig.TurnPointWorldPositionArray[index] 
+                    = GetTile(gridConfig.TurnPointGridPositionArray[next]).gameObject.transform.position;
             }
 
             switch (index)
             {
                 case 0:
-                    turnningPoint.Init(INDICATOR_1, targetPosition);
+                    turnningPoint.Init(INDICATOR_1, gridConfig.TurnPointWorldPositionArray[index]);
                     break;
                 case 1:
-                    turnningPoint.Init(INDICATOR_2, targetPosition);
+                    turnningPoint.Init(INDICATOR_2, gridConfig.TurnPointWorldPositionArray[index]);
                     break;
                 case 2:
-                    turnningPoint.Init(INDICATOR_3, targetPosition);
+                    turnningPoint.Init(INDICATOR_3, gridConfig.TurnPointWorldPositionArray[index]);
                     break;
                 case 3:
-                    turnningPoint.Init(INDICATOR_4, targetPosition);
+                    turnningPoint.Init(INDICATOR_4, gridConfig.TurnPointWorldPositionArray[index]);
                     break;
                 case 4:
-                    turnningPoint.Init(INDICATOR_5, targetPosition);
+                    turnningPoint.Init(INDICATOR_5, gridConfig.TurnPointWorldPositionArray[index]);
                     break;
                 case 5:
-                    turnningPoint.Init(INDICATOR_6, targetPosition);
+                    turnningPoint.Init(INDICATOR_6, gridConfig.TurnPointWorldPositionArray[index]);
                     break;
                 case 6:
-                    turnningPoint.Init(INDICATOR_7, targetPosition);
+                    turnningPoint.Init(INDICATOR_7, gridConfig.TurnPointWorldPositionArray[index]);
                     break;
             }
         }
