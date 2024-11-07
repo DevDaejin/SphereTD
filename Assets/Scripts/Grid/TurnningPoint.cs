@@ -8,10 +8,11 @@ using UnityEngine.AI;
 public class TurnningPoint : MonoBehaviour
 {
     private TMP_Text turnningPointNameTxt;
+    [SerializeField] private bool isEndPoint = false;
     [SerializeField] private Vector3 nextPoint;
 
-    const string ENEMY = "Enemy";
-
+    private const string enemy = "Enemy";
+    private const int endPointValue = -9999;
     public void Init(string turnningPointName, Vector3 nextPoint)
     {
         turnningPointNameTxt = GetComponent<TMP_Text>();
@@ -19,21 +20,26 @@ public class TurnningPoint : MonoBehaviour
 
         gameObject.name = turnningPointName;
         this.nextPoint = nextPoint;
+
+        if(nextPoint.y == endPointValue)
+        {
+            isEndPoint = true;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag.Equals(ENEMY))
+        if (other.tag.Equals(enemy))
         {
             Debug.Log(nextPoint);
 
-            if (nextPoint != Vector3.down)
+            if (!isEndPoint)
             {
                 other.GetComponent<NavMeshAgent>().SetDestination(nextPoint);
             }
             else
             {
-                
+                other.GetComponent<EnemyBase>().OnArriveCallback.Invoke();
             }
         }
     }

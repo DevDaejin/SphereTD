@@ -28,5 +28,12 @@ MonoBehaviour:
   - {x: 17, y: 5}
   - {x: 17, y: 29}
   - {x: 34, y: 29}
-  TurnPointWorldPositionArray: []
+  TurnPointWorldPositionArray:
+  - {x: -24, y: 0.0009999275, z: 0}
+  - {x: 24, y: 0.0009999275, z: 0}
+  - {x: 24, y: 0.0009999275, z: 24}
+  - {x: 0, y: 0.0009999275, z: 24}
+  - {x: 0, y: 0.0009999275, z: -24}
+  - {x: 34, y: 0.0009999275, z: -24}
+  - {x: 1, y: 1, z: 1}
   PathMaterial: {fileID: 2100000, guid: 94bfa6ec22a62324188ea3de15cd96fc, type: 2}

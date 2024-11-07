@@ -7,10 +7,36 @@ public class EnemySpawner : MonoBehaviour
     public static EnemySpawner Instance { get => instance; }
     private static EnemySpawner instance = null;
 
-    [SerializeField] public Vector3 SpawnPoint;
-
     [SerializeField] private GameObject enemyPrefab;
     private EnemyPool pool;
+
+    public Vector3 SpawnPoint { 
+        get
+        {
+            if(spawnPoint == default)
+            {
+                spawnPoint = FindFirstObjectByType<GridManager>().GetSpawnPoint();
+            }
+
+            return spawnPoint;
+        }
+    }
+
+    private Vector3 spawnPoint;
+
+    public Vector3 SpawnRotation { 
+        get
+        {
+            if(spawnRotation == default)
+            {
+                spawnRotation = FindFirstObjectByType<GridManager>().GetSpawnRotation();
+            }
+
+            return spawnRotation;
+        }
+    }
+
+    private Vector3 spawnRotation;
 
     private void Awake()
     {
@@ -31,21 +57,12 @@ public class EnemySpawner : MonoBehaviour
             ?? gameObject.AddComponent<EnemyPool>();
 
         pool.InitializePool(enemyPrefab, OnGetEnemy, OnReleaseEnemy);
-
-        //생성 포인트
-        foreach (TurnningPoint tp in FindObjectsOfType<TurnningPoint>())
-        {
-            if (tp.name.Equals("Start"))
-            {
-                SpawnPoint = tp.transform.position;
-                break;
-            }
-        };
     }
 
     public EnemyBase GetEnemy()
     {
-        return pool.GetEnemy();
+        EnemyBase e = pool.GetEnemy();
+        return e;
     }
 
     public void ReturnEnemy(EnemyBase enemy)
@@ -58,6 +75,7 @@ public class EnemySpawner : MonoBehaviour
     private void OnGetEnemy(EnemyBase enemy)
     {
         enemy.transform.position = SpawnPoint;
+        enemy.transform.eulerAngles = SpawnRotation;
         enemy.gameObject.SetActive(true);
 
         if(enemy.OnArriveCallback == null)

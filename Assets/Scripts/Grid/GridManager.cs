@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Text;
 using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class GridManager : MonoBehaviour
 {
@@ -18,21 +17,18 @@ public class GridManager : MonoBehaviour
     [SerializeField] Transform navMesh;
     NavMeshSurface navMeshSurface = null;
 
+    [SerializeField] private List<TurnningPoint> turnningPoints = new();
+
     // title
     private Tile[,] tileArray;
-   
+
+    private readonly string[] pointNames = { "Start", "1", "2", "3", "4", "5", "End" };
+
     /// const string 변수들
     private const string GRID_NAME = "Grid";
     private const string TILE_NAME = "Tile";
     private const string PATH_NAME = "Path";
     private const string PATH_MATERIAL = "Materials/Path";
-    private const string INDICATOR_1 = "Start";
-    private const string INDICATOR_2 = "1";
-    private const string INDICATOR_3 = "2";
-    private const string INDICATOR_4 = "3";
-    private const string INDICATOR_5 = "4";
-    private const string INDICATOR_6 = "5";
-    private const string INDICATOR_7 = "End";
     private const float GRID_HEIGHT_OFFSET_MINIMUN = 0.001f;
     private const float PATH_HEIGHT_OFFSET = 0.0005f;
     private const float INDICATOR_HEIGHT_OFFSET = 0.0005f;
@@ -78,7 +74,7 @@ public class GridManager : MonoBehaviour
     private void InitGrid()
     {
         // 기존 오브젝트 삭제
-        grid = GameObject.Find(GRID_NAME);
+        grid = GameObject.Find( transform.name + "/" + GRID_NAME);
         if (grid)
         {
             DestroyImmediate(grid);
@@ -224,9 +220,11 @@ public class GridManager : MonoBehaviour
         int length = gridConfig.TurnPointGridPositionArray.Length;
         int next = 0;
         // y값이 0이하는 쓰지 않는 데이터라는 의미로 사용하겠음
-        Vector3 targetPosition = Vector3.down;
+        Vector3 targetPosition = Vector3.down * 9999;
 
         gridConfig.TurnPointWorldPositionArray = new Vector3[length];
+
+        turnningPoints.Clear();
 
         for (int index = 0; index < length; index++)
         {
@@ -238,43 +236,30 @@ public class GridManager : MonoBehaviour
             turnningPoint.transform.position = 
                 GetTile(gridConfig.TurnPointGridPositionArray[index]).gameObject.transform.position + (Vector3.up * INDICATOR_HEIGHT_OFFSET);
 
-            next = index + 1;
-
-            if (next >= gridConfig.TurnPointGridPositionArray.Length)
+            if (index >= gridConfig.TurnPointGridPositionArray.Length - 1)
             {
-                // y값이 0이하는 쓰지 않는 데이터라는 의미로 사용하겠음
-                targetPosition = Vector3.down;
+
+                gridConfig.TurnPointWorldPositionArray[index] = targetPosition;
             }
             else
             {
                 gridConfig.TurnPointWorldPositionArray[index] 
-                    = GetTile(gridConfig.TurnPointGridPositionArray[next]).gameObject.transform.position;
+                    = GetTile(gridConfig.TurnPointGridPositionArray[index + 1]).gameObject.transform.position;
             }
 
-            switch (index)
-            {
-                case 0:
-                    turnningPoint.Init(INDICATOR_1, gridConfig.TurnPointWorldPositionArray[index]);
-                    break;
-                case 1:
-                    turnningPoint.Init(INDICATOR_2, gridConfig.TurnPointWorldPositionArray[index]);
-                    break;
-                case 2:
-                    turnningPoint.Init(INDICATOR_3, gridConfig.TurnPointWorldPositionArray[index]);
-                    break;
-                case 3:
-                    turnningPoint.Init(INDICATOR_4, gridConfig.TurnPointWorldPositionArray[index]);
-                    break;
-                case 4:
-                    turnningPoint.Init(INDICATOR_5, gridConfig.TurnPointWorldPositionArray[index]);
-                    break;
-                case 5:
-                    turnningPoint.Init(INDICATOR_6, gridConfig.TurnPointWorldPositionArray[index]);
-                    break;
-                case 6:
-                    turnningPoint.Init(INDICATOR_7, gridConfig.TurnPointWorldPositionArray[index]);
-                    break;
-            }
+            turnningPoint.Init(pointNames[index], gridConfig.TurnPointWorldPositionArray[index]);
+            turnningPoints.Add(turnningPoint);
         }
+    }
+
+    public Vector3 GetSpawnPoint()
+    {
+        return turnningPoints[0].transform.position;
+    }
+
+    public Vector3 GetSpawnRotation()
+    {
+        Vector3 direction = (turnningPoints[1].transform.position - turnningPoints[0].transform.position).normalized;
+        return Quaternion.LookRotation(direction).eulerAngles;
     }
 }
